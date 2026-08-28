@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const userModel=require('./users');
 const postModeel=require('./post');
+const upload = require('./multer');
 
 const passport=require('passport');
 const localStrategy=require("passport-local");
@@ -22,6 +23,8 @@ router.get('/login', function(req, res, next) {
 router.get('/feed', function(req, res, next) {
   res.render('feed');
 });
+
+
 
 
 router.get("/profile",isLoggedIn, async function(req,res){
@@ -68,5 +71,22 @@ function isLoggedIn(req,res,next){
   }
   res.redirect("/login");
 }
+
+router.post('/upload',isLoggedIn,upload.single("file"),async (req,res)=>{
+  if(!req.file){
+    return res.status(404).send("No file uploaded");
+  }
+  const user= await userModel.findOne({
+    username:req.session.passport.user
+  });
+  const post= await postModeel.create({
+    image:req.file.filename,
+    postText:req.body.filecaption,
+    user:user._id,
+  });
+  await user.posts.push(post._id);
+  res.send("done");
+  
+})
 
 module.exports = router;

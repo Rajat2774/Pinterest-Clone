@@ -78,6 +78,11 @@
         <button class="btn-pill btn-pill-secondary">
           Edit profile
         </button>
+        <form action="/upload", method="POST" enctype="multipart/form-data">
+          <input type="text" name="filecaption" placeholder="write a caption for your post">
+          <input type="file" name="file">
+          <button type="submit">Upload</button>
+        </form>
       </div>
     </section>
 

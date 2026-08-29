@@ -78,92 +78,55 @@
         <button class="btn-pill btn-pill-secondary">
           Edit profile
         </button>
-        <form action="/upload", method="POST" enctype="multipart/form-data">
-          <input type="text" name="filecaption" placeholder="write a caption for your post">
-          <input type="file" name="file">
-          <button type="submit">Upload</button>
-        </form>
       </div>
+
+      <!-- UPLOAD PIN CARD -->
+      <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-pin-card">
+        <div class="upload-card-body">
+          <div class="upload-input-group">
+            <i class="ri-edit-line input-icon"></i>
+            <input type="text" name="filecaption" placeholder="Write a caption for your pin..." required>
+          </div>
+          <div class="upload-file-group">
+            <input type="file" name="file" id="pin-file-input" required hidden>
+            <label for="pin-file-input" class="upload-file-label">
+              <i class="ri-image-add-line"></i>
+              <span id="chosen-file-name">Choose image</span>
+            </label>
+          </div>
+          <button type="submit" class="btn-pill btn-pill-primary upload-submit-btn">
+            <i class="ri-upload-2-line"></i> Upload
+          </button>
+        </div>
+      </form>
     </section>
-
-    <!-- PROFILE TABS SWITCHER -->
-    <nav class="profile-tabs">
-      <button class="tab-btn active">Created</button>
-      <button class="tab-btn">Saved</button>
-    </nav>
-
-    <!-- PINS GRID SECTION -->
-    <section class="pins-section">
-      <div class="pins-grid">
-
-        <!-- CREATE NEW PIN CARD -->
-        <a href="#" class="create-pin-card">
-          <div class="create-pin-icon">
-            <i class="ri-add-line"></i>
-          </div>
-          <div class="create-pin-text">Create Pin</div>
-          <div class="create-pin-sub">Share your ideas & inspiration</div>
-        </a>
-
-        <!-- STATIC PINS -->
-        <div class="pin-card">
-          <div class="pin-media">
-            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop" alt="Art pin">
-            <div class="pin-overlay">
-              <div class="pin-overlay-top">
-                <button class="pin-save-btn">Save</button>
-              </div>
-              <div class="pin-overlay-bottom">
-                <button class="pin-action-btn"><i class="ri-share-line"></i></button>
-                <button class="pin-action-btn"><i class="ri-more-fill"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="pin-info">
-            <p class="pin-title">Aesthetic Minimalist Art</p>
-          </div>
-        </div>
-
-        <div class="pin-card">
-          <div class="pin-media">
-            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop" alt="Tech pin">
-            <div class="pin-overlay">
-              <div class="pin-overlay-top">
-                <button class="pin-save-btn">Save</button>
-              </div>
-              <div class="pin-overlay-bottom">
-                <button class="pin-action-btn"><i class="ri-share-line"></i></button>
-                <button class="pin-action-btn"><i class="ri-more-fill"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="pin-info">
-            <p class="pin-title">Developer Setup Inspiration</p>
-          </div>
-        </div>
-
-        <div class="pin-card">
-          <div class="pin-media">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Nature pin">
-            <div class="pin-overlay">
-              <div class="pin-overlay-top">
-                <button class="pin-save-btn">Save</button>
-              </div>
-              <div class="pin-overlay-bottom">
-                <button class="pin-action-btn"><i class="ri-share-line"></i></button>
-                <button class="pin-action-btn"><i class="ri-more-fill"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="pin-info">
-            <p class="pin-title">Calm Ocean Waves</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
   </main>
+  <div class="container">
+    <div class="cards">
+      <% user.posts.forEach(function(post){ %>
+        <div class="card">
+          <img src="/images/uploads/<%= post.image %>">
+          <div class="card-caption">
+            <p><%= post.postText %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+  
 
+  <script>
+    const fileInput = document.getElementById('pin-file-input');
+    const fileNameText = document.getElementById('chosen-file-name');
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          fileNameText.textContent = this.files[0].name;
+        } else {
+          fileNameText.textContent = 'Choose image';
+        }
+      });
+    }
+  </script>
 </body>
 </html>

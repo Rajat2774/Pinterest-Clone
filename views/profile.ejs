@@ -19,7 +19,7 @@
         </svg>
       </a>
       <a href="/feed" class="nav-btn">Home</a>
-      <a href="#" class="nav-btn">Explore</a>
+      <a href="/feed" class="nav-btn">Explore</a>
       <a href="#" class="nav-btn">Create</a>
     </div>
 
@@ -38,7 +38,11 @@
         <i class="ri-chat-3-line"></i>
       </button>
       <a href="/profile" class="nav-avatar-btn" title="Profile">
-        U
+        <% if(user.dp) { %>
+          <img src="/images/uploads/<%= user.dp %>" alt="Profile">
+        <% } else { %>
+          <%= user.fullname ? user.fullname.charAt(0).toUpperCase() : 'U' %>
+        <% } %>
       </a>
       <a href="/logout" class="icon-btn" title="Logout">
         <i class="ri-logout-box-r-line"></i>
@@ -53,9 +57,16 @@
     <section class="profile-hero">
       <div class="avatar-wrapper">
         <div class="profile-avatar">
-          U
+          <% if(user.dp) { %>
+            <img src="/images/uploads/<%= user.dp %>" alt="">
+            <% } else { %>
+              <span><%= user.fullname.charAt(0).toUpperCase() %></span>
+              <% } %>
         </div>
-        <button class="avatar-edit-badge" title="Change profile picture">
+        <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
+          <input type="file" name="image">
+        </form>
+        <button id="uploadicon" class="avatar-edit-badge" title="Change profile picture">
           <i class="ri-camera-fill"></i>
         </button>
       </div>
@@ -116,17 +127,13 @@
   
 
   <script>
-    const fileInput = document.getElementById('pin-file-input');
-    const fileNameText = document.getElementById('chosen-file-name');
-    if (fileInput) {
-      fileInput.addEventListener('change', function() {
-        if (this.files && this.files.length > 0) {
-          fileNameText.textContent = this.files[0].name;
-        } else {
-          fileNameText.textContent = 'Choose image';
-        }
-      });
-    }
+    document.querySelector("#uploadicon").addEventListener("click", function(){
+      document.querySelector("#uploadform input").click();
+    })
+
+    document.querySelector("#uploadform input").addEventListener("change", function(){
+      document.querySelector("#uploadform").submit();
+    })
   </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const userModel=require('./users');
-const postModeel=require('./post');
+const postModel=require('./post');
 const upload = require('./multer');
 
 const passport=require('passport');
@@ -20,8 +20,14 @@ router.get('/login', function(req, res, next) {
   res.render('login',{error:req.flash('error')});
 });
 
-router.get('/feed', function(req, res, next) {
-  res.render('feed');
+router.get('/feed',isLoggedIn,async function(req, res, next) {
+  const user=await userModel.findOne({
+    username:req.session.passport.user
+  })
+  const posts=await postModel.find()
+  .populate("user")
+
+  res.render("feed",{user,posts});
 });
 
 
@@ -80,7 +86,7 @@ router.post('/upload',isLoggedIn,upload.single("file"),async (req,res)=>{
   const user= await userModel.findOne({
     username:req.session.passport.user
   });
-  const post= await postModeel.create({
+  const post= await postModel.create({
     image:req.file.filename,
     postText:req.body.filecaption,
     user:user._id,
@@ -90,5 +96,17 @@ router.post('/upload',isLoggedIn,upload.single("file"),async (req,res)=>{
   res.redirect("/profile");
   
 })
+
+router.post('/fileupload',isLoggedIn,upload.single("image"),async (req,res)=>{
+  const user= await userModel.findOne({
+    username:req.session.passport.user
+  });
+  user.dp=req.file.filename;
+  await user.save();
+  res.redirect("/profile");
+})
+
+
+
 
 module.exports = router;
